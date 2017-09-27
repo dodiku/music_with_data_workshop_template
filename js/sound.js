@@ -1,82 +1,49 @@
 console.log('hi, this is sound.js');
 
-/********
-1 - single notes
-********/
-
-var synthOne = new Tone.Synth().toMaster();
-
-synthOne.triggerAttackRelease('B4', 0.5);
-synthOne.triggerAttackRelease('C4', 0.5, 0.5);
 
 
-/********
-2 - loops
-********/
+var tweetCount = 0;
 
-var loop = new Tone.Loop(function(time){
-  synthOne.triggerAttackRelease('E3', 0.5, time);
-  synthOne.triggerAttackRelease('A3', 0.5, time + 1);
-}, 2.0);
+function triggerNote(type, tweet, _synthOne, _synthTwo){
 
-loop.start(0);
+  // getting tweet position on the page radomally
+  var height = Math.floor(Math.random() * 80);
+  var width = Math.floor(Math.random() * 50);
 
-//Will it play? nahhhhhh
-Tone.Transport.start();
+  // adding html tags to tweet
+  var tweetHtml = '<div class="tweet" id="' + tweetCount + '" style="top:' + height + 'vh; left:' + width + 'vw"><p>' + tweet + '</p></div>';
 
+  // coloring the relevant hashtags
+  tweetHtml = tweetHtml.replace('#thishashtag', '<span id="hashtag">#thishashtag</span>');
 
-/********
-3 - synth props
-********/
+  // getting note randomally
+  var note = notes[Math.round(Math.random()*notes.length - 1)];
+  console.log(note);
 
-var synthOne = new Tone.Synth({
- oscillator:{
-    type: 'square8'
-  },
-  envelope : {
-     attack : 0.001,
-      decay : 2,
-      sustain : 0
+  // playing the note
+  // using 'regular' synth
+  if (type === 'high') {
+    _synthOne.triggerAttackRelease(note, 0.5);
+
+  // using 'rare' synth
+  } else {
+    _synthTwo.triggerAttackRelease(note, 5);
   }
-}).toMaster();
+
+  // adding the tweet to the page
+  $('.container').append(tweetHtml);
+
+  // making tweet disappear gradually
+  var id = '#' + tweetCount;
+
+    $(id).delay(500).animate({
+      'opacity': 0
+    }, 4000, function(){
+      $(id).remove();
+    });
 
 
-/********
-4 - syth types
-********/
+  // incrementing tweetCount
+  tweetCount++;
 
-var synthTwo = new Tone.MonoSynth().toMaster();
-synthTwo.triggerAttackRelease('B2', 0.5);
-
-
-function Note(note){
-  synthTwo.triggerAttackRelease(note, 0.5);
 }
-
-/******
-5 - synth two props
-******/
-var synthTwo = new Tone.MonoSynth({
-     oscillator: {
-       type : "fatsawtooth4"
-     },
-     filter: {
-       type:"peaking"
-     },
-     envelope: {
-       attack : 2,
-       decay : 1,
-       sustain : 4,
-       release : 16
-     },
-     filterEnvelope:{
-       attack : 2,
-       decay : 1,
-       sustain : 1,
-       release : 10,
-       baseFrequency:100,
-       octaves:2,
-       exponent:4
-    }
-  }
-).toMaster();
