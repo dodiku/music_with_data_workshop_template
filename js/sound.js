@@ -2,7 +2,14 @@ console.log('hi, this is sound.js');
 
 
 
+//// WRITE CODE HERE 👆
+
 var tweetCount = 0;
+
+/*****************************
+Array of notes of the pentatonic scale
+*****************************/
+var notes = ['A2', 'C2', 'D2', 'E2', 'G2'];
 
 function triggerNote(type, tweet, _synthOne, _synthTwo){
 
